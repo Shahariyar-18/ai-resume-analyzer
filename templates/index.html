@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Resume Analyzer</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                AI
+            </div>
+
+            <div class="brand-text">
+
+                <h1>
+                    Resume Analyzer
+                </h1>
+
+                <p>
+                    AI-powered resume & job matching
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="home-main">
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+                ✓ &nbsp; AI-POWERED RESUME ANALYZER
+            </div>
+
+
+            <h2>
+                Analyze Your
+                <span>Resume</span>
+            </h2>
+
+
+            <p>
+                Get instant ATS score, skill analysis and
+                job compatibility
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             UPLOAD CARD
+        ================================================== -->
+
+        <section class="upload-card">
+
+
+            <form
+                action="{{ url_for('analyze') }}"
+                method="POST"
+                enctype="multipart/form-data"
+                id="resumeForm"
+            >
+
+
+                <!-- =================================================
+                     RESUME UPLOAD
+                ================================================== -->
+
+                <div
+                    class="upload-box"
+                    id="uploadBox"
+                >
+
+
+                    <!-- Hidden file input -->
+
+                    <input
+                        type="file"
+                        id="resume"
+                        name="resume"
+                        accept=".pdf,.docx"
+                        hidden
+                        required
+                    >
+
+
+
+                    <!-- =================================================
+                         DEFAULT UPLOAD STATE
+                    ================================================== -->
+
+                    <div
+                        class="upload-default"
+                        id="uploadDefault"
+                    >
+
+
+                        <!-- Upload icon -->
+
+                        <div class="upload-icon">
+
+                            <svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+
+                                <path
+                                    d="M12 16V4"
+                                />
+
+                                <path
+                                    d="M7 9l5-5 5 5"
+                                />
+
+                                <path
+                                    d="M5 20h14"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+
+                        <h3>
+                            Upload Your Resume
+                        </h3>
+
+
+                        <p>
+                            Drag & drop your resume here
+                            or click to browse
+                        </p>
+
+
+                        <span>
+                            PDF / DOCX • Max 10 MB
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         SELECTED FILE STATE
+                    ================================================== -->
+
+                    <div
+                        class="selected-file"
+                        id="selectedFile"
+                    >
+
+                        <div class="selected-file-icon">
+
+                            <svg
+                                width="25"
+                                height="25"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            >
+
+                                <path
+                                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                                />
+
+                                <polyline
+                                    points="14 2 14 8 20 8"
+                                />
+
+                            </svg>
+
+                        </div>
+
+
+                        <div class="file-details">
+
+                            <strong id="fileName">
+                                Resume.pdf
+                            </strong>
+
+                            <span id="fileSize">
+                                0 KB
+                            </span>
+
+                        </div>
+
+
+                        <div class="file-status">
+
+                            <span class="check-icon">
+                                ✓
+                            </span>
+
+                            Uploaded
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         CHOOSE FILE BUTTON
+                    ================================================== -->
+
+                    <button
+                        type="button"
+                        class="choose-button"
+                        id="chooseButton"
+                    >
+                        Choose File
+                    </button>
+
+
+
+                    <!-- =================================================
+                         CHANGE FILE BUTTON
+                    ================================================== -->
+
+                    <button
+                        type="button"
+                        class="change-file"
+                        id="changeFile"
+                    >
+                        Change File
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     JOB DESCRIPTION
+                ================================================== -->
+
+                <div class="job-section">
+
+
+                    <div class="job-heading">
+
+                        <h3>
+                            🎯 &nbsp;Job Description
+                        </h3>
+
+                        <span>
+                            Optional
+                        </span>
+
+                    </div>
+
+
+                    <textarea
+                        name="job_description"
+                        id="jobDescription"
+                        placeholder="Paste the job description here to compare your resume with the target job..."
+                    ></textarea>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ANALYZE BUTTON
+                ================================================== -->
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                    id="analyzeBtn"
+                >
+
+                    🚀 &nbsp; Analyze Resume
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <p>
+            AI Resume Analyzer
+            • ATS
+            • NLP
+            • Machine Learning
+        </p>
+
+        <p>
+            © 2026 All rights reserved.
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const resumeInput =
+    document.getElementById("resume");
+
+const uploadBox =
+    document.getElementById("uploadBox");
+
+const uploadDefault =
+    document.getElementById("uploadDefault");
+
+const selectedFile =
+    document.getElementById("selectedFile");
+
+const fileName =
+    document.getElementById("fileName");
+
+const fileSize =
+    document.getElementById("fileSize");
+
+const chooseButton =
+    document.getElementById("chooseButton");
+
+const changeFile =
+    document.getElementById("changeFile");
+
+const resumeForm =
+    document.getElementById("resumeForm");
+
+const analyzeBtn =
+    document.getElementById("analyzeBtn");
+
+
+
+/* =========================================================
+   CHOOSE FILE
+========================================================= */
+
+chooseButton.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        resumeInput.click();
+
+    }
+);
+
+
+
+/* =========================================================
+   UPLOAD BOX CLICK
+========================================================= */
+
+uploadBox.addEventListener(
+    "click",
+    function (event) {
+
+        /*
+         * Don't open file picker if the user
+         * clicked one of the buttons.
+         */
+
+        if (
+            event.target.closest(
+                ".choose-button"
+            )
+            ||
+            event.target.closest(
+                ".change-file"
+            )
+        ) {
+
+            return;
+
+        }
+
+        resumeInput.click();
+
+    }
+);
+
+
+
+/* =========================================================
+   CHANGE FILE
+========================================================= */
+
+changeFile.addEventListener(
+    "click",
+    function (event) {
+
+        event.stopPropagation();
+
+        resumeInput.click();
+
+    }
+);
+
+
+
+/* =========================================================
+   FILE SELECTED
+========================================================= */
+
+resumeInput.addEventListener(
+    "change",
+    function () {
+
+        if (
+            this.files &&
+            this.files.length > 0
+        ) {
+
+            handleFile(
+                this.files[0]
+            );
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   HANDLE FILE
+========================================================= */
+
+function handleFile(file) {
+
+
+    /* -----------------------------------------
+       Check extension
+    ----------------------------------------- */
+
+    const name =
+        file.name.toLowerCase();
+
+    const isPDF =
+        name.endsWith(".pdf");
+
+    const isDOCX =
+        name.endsWith(".docx");
+
+
+    if (
+        !isPDF &&
+        !isDOCX
+    ) {
+
+        alert(
+            "Please upload a PDF or DOCX file."
+        );
+
+        resumeInput.value = "";
+
+        return;
+
+    }
+
+
+
+    /* -----------------------------------------
+       Check size
+    ----------------------------------------- */
+
+    const maxSize =
+        10 * 1024 * 1024;
+
+
+    if (
+        file.size > maxSize
+    ) {
+
+        alert(
+            "File is too large. Maximum size is 10 MB."
+        );
+
+        resumeInput.value = "";
+
+        return;
+
+    }
+
+
+
+    /* -----------------------------------------
+       Display filename
+    ----------------------------------------- */
+
+    fileName.textContent =
+        file.name;
+
+
+
+    /* -----------------------------------------
+       Display file size
+    ----------------------------------------- */
+
+    fileSize.textContent =
+        formatFileSize(
+            file.size
+        );
+
+
+
+    /* -----------------------------------------
+       Change upload box state
+    ----------------------------------------- */
+
+    uploadBox.classList.add(
+        "file-selected"
+    );
+
+
+
+    /* -----------------------------------------
+       Show selected file
+    ----------------------------------------- */
+
+    uploadDefault.style.display =
+        "none";
+
+    selectedFile.style.display =
+        "flex";
+
+    chooseButton.style.display =
+        "none";
+
+    changeFile.style.display =
+        "block";
+
+}
+
+
+
+/* =========================================================
+   FORMAT FILE SIZE
+========================================================= */
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) {
+
+        return bytes + " B";
+
+    }
+
+
+    if (bytes < 1024 * 1024) {
+
+        return (
+            (bytes / 1024).toFixed(1)
+            +
+            " KB"
+        );
+
+    }
+
+
+    return (
+        (bytes / (1024 * 1024)).toFixed(1)
+        +
+        " MB"
+    );
+
+}
+
+
+
+/* =========================================================
+   DRAG OVER
+========================================================= */
+
+uploadBox.addEventListener(
+    "dragover",
+    function (event) {
+
+        event.preventDefault();
+
+        uploadBox.classList.add(
+            "drag-active"
+        );
+
+    }
+);
+
+
+
+/* =========================================================
+   DRAG LEAVE
+========================================================= */
+
+uploadBox.addEventListener(
+    "dragleave",
+    function () {
+
+        uploadBox.classList.remove(
+            "drag-active"
+        );
+
+    }
+);
+
+
+
+/* =========================================================
+   DROP FILE
+========================================================= */
+
+uploadBox.addEventListener(
+    "drop",
+    function (event) {
+
+        event.preventDefault();
+
+        uploadBox.classList.remove(
+            "drag-active"
+        );
+
+
+        const files =
+            event.dataTransfer.files;
+
+
+        if (
+            files &&
+            files.length > 0
+        ) {
+
+            const file =
+                files[0];
+
+
+            /*
+             * Validate first.
+             */
+
+            const name =
+                file.name.toLowerCase();
+
+
+            if (
+                !name.endsWith(".pdf")
+                &&
+                !name.endsWith(".docx")
+            ) {
+
+                alert(
+                    "Please upload a PDF or DOCX file."
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Put dropped file into
+             * the actual input.
+             */
+
+            const dataTransfer =
+                new DataTransfer();
+
+
+            dataTransfer.items.add(
+                file
+            );
+
+
+            resumeInput.files =
+                dataTransfer.files;
+
+
+            handleFile(file);
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   FORM SUBMIT
+========================================================= */
+
+resumeForm.addEventListener(
+    "submit",
+    function (event) {
+
+
+        if (
+            !resumeInput.files
+            ||
+            resumeInput.files.length === 0
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "Please select a resume first."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Prevent double submission.
+         */
+
+        analyzeBtn.disabled =
+            true;
+
+
+        analyzeBtn.innerHTML =
+            "⏳ &nbsp; Analyzing Resume...";
+
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

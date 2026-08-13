@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Resume Analysis Results</title>
+
+    <!-- IMPORTANT: Result page has its own CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/result.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<div class="result-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="result-header">
+
+        <div class="result-brand">
+
+            <div class="result-logo">
+                AI
+            </div>
+
+            <div>
+
+                <h1>
+                    Resume Analyzer
+                </h1>
+
+                <p>
+                    AI-Powered Resume Analysis
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('index') }}"
+            class="back-button"
+        >
+            ← Analyze Another
+        </a>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="result-main">
+
+
+        <!-- PAGE INTRO -->
+
+        <section class="result-intro">
+
+            <span class="complete-badge">
+                ✓ Analysis Complete
+            </span>
+
+            <h2>
+                Your Resume Results
+            </h2>
+
+            <p>
+                Here's a detailed analysis of your resume,
+                ATS compatibility, skills and job matching.
+            </p>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SCORE CARDS
+        ================================================== -->
+
+        <section class="score-grid">
+
+
+            <!-- ATS SCORE -->
+
+            <div class="score-card ats-card">
+
+                <div class="score-card-content">
+
+                    <span class="card-label">
+                        ATS SCORE
+                    </span>
+
+                    <div class="score-number">
+
+                        <span
+                            class="counter"
+                            data-target="{{ ats_score|default(0) }}"
+                        >
+                            {{ ats_score|default(0) }}
+                        </span>
+
+                        <small>/100</small>
+
+                    </div>
+
+
+                    {% if ats_score >= 80 %}
+
+                        <span class="score-status excellent">
+                            ● Excellent resume score
+                        </span>
+
+                    {% elif ats_score >= 60 %}
+
+                        <span class="score-status good">
+                            ● Good, but can be improved
+                        </span>
+
+                    {% elif ats_score >= 40 %}
+
+                        <span class="score-status average">
+                            ● Average resume score
+                        </span>
+
+                    {% else %}
+
+                        <span class="score-status poor">
+                            ● Needs improvement
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- SCORE CIRCLE -->
+
+                <div
+                    class="score-ring"
+                    style="--score: {{ ats_score|default(0) }};"
+                >
+
+                    <div class="score-ring-inner">
+
+                        <strong>
+                            {{ ats_score|default(0) }}
+                        </strong>
+
+                        <span>
+                            /100
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- JOB MATCH -->
+
+            <div class="score-card job-match-card">
+
+                <div>
+
+                    <span class="card-label">
+                        JOB MATCH
+                    </span>
+
+
+                    {% if job_result and job_result.similarity_score > 0 %}
+
+                        <div class="score-number">
+
+                            <span>
+                                {{ job_result.similarity_score }}
+                            </span>
+
+                            <small>%</small>
+
+                        </div>
+
+
+                        {% if job_result.similarity_score >= 75 %}
+
+                            <span class="score-status excellent">
+                                ● Strong match
+                            </span>
+
+                        {% elif job_result.similarity_score >= 50 %}
+
+                            <span class="score-status good">
+                                ● Moderate match
+                            </span>
+
+                        {% else %}
+
+                            <span class="score-status poor">
+                                ● Low match
+                            </span>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <div class="no-match">
+                            —
+                        </div>
+
+                        <span class="score-status neutral">
+                            No job description provided
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="job-icon">
+                    🎯
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ATS BREAKDOWN
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        ATS ANALYSIS
+                    </span>
+
+                    <h2>
+                        📊 ATS Score Breakdown
+                    </h2>
+
+                </div>
+
+
+                <div class="total-score">
+                    {{ ats_score|default(0) }}/100
+                </div>
+
+            </div>
+
+
+            <div class="ats-list">
+
+                {% for category, score in ats_breakdown.items() %}
+
+                    {% if category == "Contact Information" %}
+                        {% set maximum = 10 %}
+                    {% elif category == "Keywords & Skills" %}
+                        {% set maximum = 20 %}
+                    {% elif category == "Resume Sections" %}
+                        {% set maximum = 14 %}
+                    {% elif category == "Experience" %}
+                        {% set maximum = 10 %}
+                    {% elif category == "Action Verbs" %}
+                        {% set maximum = 10 %}
+                    {% elif category == "Resume Length" %}
+                        {% set maximum = 10 %}
+                    {% elif category == "Structure & Format" %}
+                        {% set maximum = 10 %}
+                    {% else %}
+                        {% set maximum = 10 %}
+                    {% endif %}
+
+
+                    <div class="ats-item">
+
+                        <div class="ats-info">
+
+                            <span>
+                                {{ category }}
+                            </span>
+
+                            <strong>
+                                {{ score }}/{{ maximum }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            <div
+                                class="progress-fill"
+                                data-width="{{ ((score / maximum) * 100)|round(0) }}"
+                            >
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CANDIDATE INFORMATION
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        PROFILE
+                    </span>
+
+                    <h2>
+                        👤 Candidate Information
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-grid">
+
+
+                <div class="info-box">
+
+                    <span>
+                        FULL NAME
+                    </span>
+
+                    <strong>
+                        {{ resume_info.name
+                           if resume_info.name
+                           else "Not detected" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        EMAIL
+                    </span>
+
+                    <strong>
+                        {{ resume_info.email
+                           if resume_info.email
+                           else "Not detected" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        PHONE
+                    </span>
+
+                    <strong>
+                        {{ resume_info.phone
+                           if resume_info.phone
+                           else "Not detected" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span>
+                        EXPERIENCE
+                    </span>
+
+                    <strong>
+                        {{ resume_info.experience
+                           if resume_info.experience
+                           else "Not detected" }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SKILLS
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        SKILLS
+                    </span>
+
+                    <h2>
+                        🛠️ Detected Skills
+                    </h2>
+
+                </div>
+
+
+                <div class="count-badge">
+                    {{ skills|length }} Skills
+                </div>
+
+            </div>
+
+
+            <div class="skills-container">
+
+                {% for skill in skills %}
+
+                    <span class="skill-tag">
+                        {{ skill }}
+                    </span>
+
+                {% else %}
+
+                    <p class="empty-text">
+                        No skills detected.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             JOB MATCH DETAILS
+        ================================================== -->
+
+        {% if job_result and job_result.similarity_score > 0 %}
+
+        <section class="two-column">
+
+
+            <!-- MATCHING -->
+
+            <div class="result-card">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            JOB MATCH
+                        </span>
+
+                        <h2>
+                            ✅ Matching Skills
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="skills-container">
+
+                    {% for skill in job_result.matching_skills %}
+
+                        <span class="skill-tag matching">
+                            ✓ {{ skill }}
+                        </span>
+
+                    {% else %}
+
+                        <p class="empty-text">
+                            No matching skills found.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MISSING -->
+
+            <div class="result-card">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <span class="card-label">
+                            SKILL GAP
+                        </span>
+
+                        <h2>
+                            ❌ Missing Skills
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="skills-container">
+
+                    {% for skill in job_result.missing_skills %}
+
+                        <span class="skill-tag missing">
+                            + {{ skill }}
+                        </span>
+
+                    {% else %}
+
+                        <p class="empty-text">
+                            No major missing skills.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+        {% endif %}
+
+
+
+        <!-- =================================================
+             EDUCATION
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        EDUCATION
+                    </span>
+
+                    <h2>
+                        🎓 Education Detected
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="skills-container">
+
+                {% for education in resume_info.education %}
+
+                    <span class="skill-tag">
+                        {{ education }}
+                    </span>
+
+                {% else %}
+
+                    <p class="empty-text">
+                        Education information not detected.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SUGGESTIONS
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        RECOMMENDATIONS
+                    </span>
+
+                    <h2>
+                        💡 Resume Improvement
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="suggestions">
+
+                {% for suggestion in suggestions %}
+
+                    <div class="suggestion">
+
+                        <div class="suggestion-number">
+                            {{ loop.index }}
+                        </div>
+
+                        <p>
+                            {{ suggestion }}
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="suggestion">
+
+                        <div class="suggestion-number">
+                            ✓
+                        </div>
+
+                        <p>
+                            Your resume looks good.
+                            Continue tailoring it to each job.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             EXTRACTED TEXT
+        ================================================== -->
+
+        <section class="result-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="card-label">
+                        RESUME CONTENT
+                    </span>
+
+                    <h2>
+                        📄 Extracted Resume Text
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="copy-button"
+                    onclick="copyResumeText()"
+                >
+                    Copy Text
+                </button>
+
+            </div>
+
+
+            <textarea
+                id="resumeText"
+                class="resume-text"
+                readonly
+            >{{ resume_text }}</textarea>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ACTION
+        ================================================== -->
+
+        <div class="result-actions">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="analyze-again"
+            >
+                🔄 Analyze Another Resume
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="result-footer">
+
+        AI Resume Analyzer
+        • ATS
+        • NLP
+        • Machine Learning
+
+    </footer>
+
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   PROGRESS BARS
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        document
+            .querySelectorAll(".progress-fill")
+            .forEach(function (bar) {
+
+                const width =
+                    bar.dataset.width || 0;
+
+                setTimeout(function () {
+
+                    bar.style.width =
+                        width + "%";
+
+                }, 200);
+
+            });
+
+    }
+);
+
+
+/* =========================================================
+   COPY RESUME TEXT
+========================================================= */
+
+function copyResumeText() {
+
+    const text =
+        document.getElementById(
+            "resumeText"
+        );
+
+
+    navigator.clipboard
+        .writeText(text.value)
+        .then(function () {
+
+            const button =
+                document.querySelector(
+                    ".copy-button"
+                );
+
+            button.textContent =
+                "✓ Copied";
+
+            setTimeout(function () {
+
+                button.textContent =
+                    "Copy Text";
+
+            }, 1500);
+
+        });
+
+}
+
+</script>
+
+
+</body>
+
+</html>
