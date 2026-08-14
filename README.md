@@ -5,6 +5,11 @@
 AI Resume Analyzer helps candidates evaluate their resumes by analyzing ATS compatibility, extracting skills, comparing resumes with job descriptions, identifying missing keywords, and providing useful resume insights through a modern and responsive web interface.
 
 ---
+## 🌐 Live Demo
+
+Try the AI resume analyzer:
+
+👉https://ai-resume-analyzer-1-74sw.onrender.com/
 
 ## ✨ Features
 
@@ -141,12 +146,13 @@ AI-Resume-Analyzer/
 ├── README.md
 ├── .gitignore
 │
-├── model/
-│   └── ...
+├── uploads/
+│   └── .gitkeep
 │
 ├── utils/
+│   ├── __init__.py
 │   ├── resume_parser.py
-│   ├── ats_scorer.py
+│   ├── ats_score.py
 │   └── job_matcher.py
 │
 ├── templates/
@@ -156,7 +162,8 @@ AI-Resume-Analyzer/
 └── static/
     │
     ├── css/
-    │   └── style.css
+    │   ├── style.css
+    │   └── result.css
     │
     └── js/
         └── script.js
