@@ -224,9 +224,12 @@ MISSING SKILLS
 
 ## 👨‍💻 Author
 
-**Shahariyar Khan**
+**Mahammad Shahariyar Khan**
 
-Computer Science & Engineering — Artificial Intelligence
+CSE (AI & ML) Student
+
+GitHub:  
+https://github.com/Shahariyar-18
 
 ---
 
